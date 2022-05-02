@@ -1,0 +1,17 @@
+spring:
+    datasource:
+        url: jdbc:mysql://10.124.224.3:3306/isto-portal-production
+        username: isto-portal-production
+        password: 7cbmnLCJeP1HuFtk
+        driver-class-name: com.mysql.cj.jdbc.Driver
+    output:
+        ansi:
+            enabled: never
+    jpa:
+        database: mysql
+        show-sql: false
+        hibernate:
+            ddl-auto: 'create'
+        properties:
+            hibernate:
+                dialect: org.hibernate.dialect.MySQL5InnoDBDialect

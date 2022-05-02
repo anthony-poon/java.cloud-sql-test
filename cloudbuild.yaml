@@ -1,0 +1,19 @@
+steps:
+    -   name: maven:3-jdk-8
+        entrypoint: mvn
+        args: [ 'package','-Dmaven.test.skip=true' ]
+    -   name: gcr.io/cloud-builders/docker
+        args: [ 'build', '-t', 'asia-east1-docker.pkg.dev/howie-project/docker/cloud-sql-test:$BRANCH_NAME', '--build-arg=JAR_FILE=target/cloud-sql-test.jar', '.' ]
+    -   name: 'gcr.io/cloud-builders/docker'
+        args: [ 'push', 'asia-east1-docker.pkg.dev/howie-project/docker/cloud-sql-test:$BRANCH_NAME' ]
+    -   name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+        entrypoint: gcloud
+        args: [
+                'run', 'deploy', 'cloud-sql-test-$BRANCH_NAME',
+                '--image', 'asia-east1-docker.pkg.dev/howie-project/docker/cloud-sql-test:$BRANCH_NAME',
+                '--region', 'europe-west2',
+                '--set-env-vars=SPRING_PROFILES_ACTIVE=production',
+                '--service-account=isto-portal-backend-production@howie-project.iam.gserviceaccount.com',
+                '--vpc-connector=isto-vpc-connector-2'
+        ]
+images: [ 'asia-east1-docker.pkg.dev/howie-project/docker/cloud-sql-test:$BRANCH_NAME' ]
